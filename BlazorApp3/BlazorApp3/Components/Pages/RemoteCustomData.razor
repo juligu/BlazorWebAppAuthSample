@@ -1,0 +1,33 @@
+﻿@page "/RemoteDataServerCustom"
+@rendermode InteractiveServer
+
+@using BlazorApp3.Client.ApiTest
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<h3>RemoteData</h3>
+
+@if (Data == null)
+{
+    <p>Loading...</p>    
+}
+else
+{
+    @foreach (TestData test in Data)
+    {
+        <li>@test.Name</li>
+    }
+}
+
+
+@code {
+    public IEnumerable<TestData> Data { get; set; }
+    [Inject(Key = "RemoteAPICustom")]
+    public IClientData ClientDataTest { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Data = await ClientDataTest.GetData();
+    }
+}

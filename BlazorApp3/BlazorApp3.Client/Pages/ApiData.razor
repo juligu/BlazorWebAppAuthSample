@@ -1,0 +1,30 @@
+﻿@page "/ApiData"
+@using BlazorApp3.Client.ApiTest
+@using Microsoft.AspNetCore.Authorization
+@rendermode InteractiveWebAssembly
+@inject IAPIData ClientData
+@attribute [Authorize]
+
+
+<h3>ApiData</h3>
+
+@if (data == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @foreach(TestData item in data)
+    {
+        <li>@item.Name</li>
+    }
+}
+
+@code {
+    private IEnumerable<TestData>? data;
+
+    protected override async Task OnInitializedAsync()
+    {
+        data = await ClientData.GetTestDataAsync();
+    }
+}
