@@ -1,0 +1,29 @@
+﻿@page "/apim"
+@using BlazorApp3.ApiTest
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<h3>APIM</h3>
+
+@if (forecast == null)
+{
+    <p>Loading...</p>    
+}
+else
+{
+    @foreach (WeatherForecast test in forecast)
+    {
+        <li>@test.Date</li>
+    }
+}
+
+@code {
+    WeatherForecast[] forecast;
+    [Inject]
+    public IAPIMData ClientDataTest { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecast = await ClientDataTest.GetData();
+    }
+}

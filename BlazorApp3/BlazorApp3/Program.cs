@@ -1,3 +1,4 @@
+using Azure.Identity;
 using BlazorApp3;
 using BlazorApp3.ApiTest;
 using BlazorApp3.Client.ApiTest;
@@ -18,6 +19,22 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+if (builder.Environment.IsDevelopment())
+{
+    //builder.Configuration.AddAzureKeyVault(
+    //new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
+    //new ClientSecretCredential("TenID", "CID", "CSEC")
+    //);
+}
+else if (builder.Environment.IsProduction())
+{
+    builder.Configuration.AddAzureKeyVault(
+    new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
+    new DefaultAzureCredential()
+    );
+}
+
+
 // Custom Token Storage
 builder.Services.AddSingleton<IUserTokenStorage, TokenStorage>();
 builder.Services.AddSingleton<CustomTokenStorageEvents, CustomTokenStorageEvents>();
@@ -35,7 +52,7 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
         // Save the token as part of the cookie
         options.SaveTokens = true;
         // Request addional scopes to access APIs
-        options.Scope.Add("api");
+        //options.Scope.Add("api");
         // Custom handler to store tokens, optional
         options.EventsType = typeof(CustomTokenStorageEvents);
     });
@@ -49,11 +66,14 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingAuthenticationStateProvider>();
 // Service to retrieve data from Server
 builder.Services.AddKeyedScoped<IClientData, ServerData>("LocalAPI");
-        //builder.Services.AddKeyedScoped<IClientData, RemoteData>("RemoteAPI");
+
+
         //builder.Services.AddKeyedScoped<IClientData, RemoteCustomData>("RemoteAPICustom");
 
 // Service to retrieve data from an internal and external APIs
 builder.Services.AddScoped<IAPIData, APIDataServer>();
+builder.Services.AddScoped<IAPIMData, APIMData>();
+
 
         //builder.Services.AddHttpClient("RemoteAPI", httpClient =>
         //{
@@ -70,6 +90,14 @@ builder.Services.AddHttpClient("RemoteAPIClient", httpClient =>
     httpClient.BaseAddress = new Uri("https://localhost:7196");
 });
 
+
+builder.Services.AddHttpClient("APIMClient", httpClient =>
+{
+    httpClient.BaseAddress = new Uri("https://juliguapimdelete.azure-api.net");
+    httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", 
+        builder.Configuration.GetValue<string>("Ocp-Apim-Subscription-Key")
+        );
+});
 
 
 var app = builder.Build();

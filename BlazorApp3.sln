@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp3", "BlazorApp3\Bl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp3.Client", "BlazorApp3\BlazorApp3.Client\BlazorApp3.Client.csproj", "{49F2248E-10CE-4591-88FD-79ECDAD447CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteWebAPI", "RemoteWebAPI\RemoteWebAPI.csproj", "{B6DBDC9B-FB40-418B-804B-DEB41BE14045}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteWebAPI", "RemoteWebAPI\RemoteWebAPI.csproj", "{B6DBDC9B-FB40-418B-804B-DEB41BE14045}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
